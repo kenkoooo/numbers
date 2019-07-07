@@ -1,18 +1,7 @@
+use crate::util;
 use crate::NumbersData;
 
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
-
 use regex::Regex;
-
-fn load_file(filepath: &str) -> std::io::Result<String> {
-    let file = File::open(filepath)?;
-    let mut reader = BufReader::new(file);
-    let mut buffer = String::new();
-    reader.read_to_string(&mut buffer)?;
-    Ok(buffer)
-}
 
 fn parse_numbers_file(filename: &str) -> Vec<Vec<String>> {
     let re = Regex::new(r"<tr.*?/tr>").unwrap();
@@ -21,7 +10,7 @@ fn parse_numbers_file(filename: &str) -> Vec<Vec<String>> {
     let td_c = Regex::new(r"^<td.*?>(.*?)</td>$").unwrap();
     let space = Regex::new(r"[\r\s]+").unwrap();
 
-    let s = load_file(filename).unwrap().replace("\n", " ");
+    let s = util::read_file(filename).unwrap().replace("\n", " ");
     let mut result = vec![];
     let mut pos = 0;
     while let Some(m) = re.find_at(&s, pos) {
